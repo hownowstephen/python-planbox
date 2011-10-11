@@ -1,5 +1,6 @@
 from util import HTTPClient,DotDict
 import os,re, yaml
+from pprint import PrettyPrinter
 
 class PlanboxAPI():
 
@@ -17,7 +18,8 @@ class PlanboxAPI():
                 raise MissingParameterError,'Missing parameter "%s": %s' % (param,description)
             params[param] = kwargs[param]
         url = ''.join([self.config.uri,endpoint.path])
-        return self.fetcher.do_POST(url,data=params)
+        headers,data = self.fetcher.do_POST(url,data=params)
+        return data
 
     def __getattr__(self,key):
         '''Allows access to individual endpoints'''
@@ -39,9 +41,25 @@ class PlanboxAPI():
             endpoints[endpoint['name']] = endpoint
         config[root]['endpoints'] = endpoints
         return DotDict(config[root])
-    
+
+    def help(self,endpoint=None):
+        '''Basic info about the package/endpoints'''
+        if not endpoint:
+            print "Planbox API Methods"
+            for key,endpoint in self.config.endpoints.iteritems():
+                print '\t%s: %s'  % (key,endpoint['description'])
+                if not endpoint['params'] is None:
+                    for param,description in endpoint['params'].iteritems():
+                        print '\t\t%s: %s' % (param,description)
+                else:
+                    print "\t\tNo params"
+        else:
+            p = PrettyPrinter()
+            p.pprint(self.config.endpoints[endpoint])
+
 class MissingParameterError(Exception): pass
 
 if __name__ == '__main__':
 
     api = PlanboxAPI()
+
