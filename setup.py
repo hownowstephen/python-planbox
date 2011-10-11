@@ -9,6 +9,7 @@ setup(
     description = ("Python interface to the planbox API"),
     url = "https://github.com/stephenyoung/python-planbox",
     packages= ['planbox'],
+    package_data={'': ['planbox.yaml']},
     install_requires=[
         'pyyaml>=3.09',
     ]
