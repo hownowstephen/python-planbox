@@ -1,0 +1,204 @@
+planbox:
+    # Define our base path
+    path: www.planbox.com/api
+
+    # Define some response codes
+    codes:
+        success: ok
+        failure: error
+    # Api type
+    type: POST-only endpoints
+
+    # Api Endpoints
+    endpoints:
+      - name: login
+        description: Logs you into Planbox creating a session on server side. You save the session in a cookie on the client side.
+        ref: http://www.planbox.com/api/help/authentication
+        path: /login/
+        params:
+            email: Your email - the one you use to log into Planbox.
+            password: Your password.
+        auth: yes
+
+      - name: logout
+        description: Logs you out and destroys the session on server side. You will no longer be able to perform other API calls.
+        ref: http://www.planbox.com/api/help/authentication
+        path: /logout/
+        params: None
+        auth: yes
+
+      - name: get_product
+        description: Retrieves the product. The logged resource must be on that product.
+        ref: http://www.planbox.com/api/help/products_projects
+        path: /get_product/
+        params: 
+            product_id: The product to retrieve.
+        auth: yes
+
+      - name: get_products
+        description: Retrieves the list of products for the logged resource.
+        ref: http://www.planbox.com/api/help/products_projects
+        path: /get_products/
+        params: None
+        auth: yes
+
+      - name: get_project
+        description: Retrieves the projects in a product. The list of projects returned is curated based on the logged user's permission.
+        ref: http://www.planbox.com/api/help/products_projects
+        path: /get_project/
+        params:
+            product_id: Parent product id.
+            project_id: Project id.
+        auth: yes
+
+      - name: get_projects
+        description: Retrieves all projects in the given product.
+        ref: http://www.planbox.com/api/help/products_projects
+        path: /get_projects/
+        params: 
+            product_id: Product from which to retrieve projects.
+        auth: yes
+
+      - name: get_iterations
+        description: Retrieves iterations for the given product.
+        ref: http://www.planbox.com/api/help/iterations
+        path: /get_iterations/
+        params: 
+            product_id: The product to retrieve.
+            timeframe: Optional. An array of timeframes or a single timeframe.
+            iteration_id: >
+                Optional. Array of iteration ids to fetch or a single iteration id. 
+                If omitted timeframe is used instead. 
+                You cannot specify both timeframe and iteration_id.
+        auth: yes
+
+      - name: get_story
+        description: Retrieves a story object along with all its tasks, past tasks, file attachments and comments.
+        ref: http://www.planbox.com/api/help/stories_tasks
+        path: /get_story/
+        params: 
+            story_id: Story id.
+        auth: yes
+
+      - name: get_stories
+        description: Retrieves stories for a given product (initiative) and iterations. The list of stories returned is curated based on the permission of the logged user.
+        ref: http://www.planbox.com/api/help/stories_tasks
+        path: /get_stories/
+        params: 
+            product_id: The product to retrieve.
+            timeframe: Optional. An array of timeframes or a single timeframe.
+            iteration_id: >
+                Optional. Array of iteration ids to fetch or a single iteration id. 
+                If omitted timeframe is used instead. 
+                You cannot specify both timeframe and iteration_id.
+        auth: yes
+
+      - name: get_logged_resource
+        description: Retrieves the logged resource object.
+        ref: http://www.planbox.com/api/help/resources
+        path: /get_logged_resource/
+        params: None
+        auth: yes
+
+      - name: get_resources
+        description: Retrieves all resources involved on a product.
+        ref: http://www.planbox.com/api/help/resources
+        path: /get_resources/
+        params: 
+            product_id: Product from which to retrieve resources.
+        auth: yes
+
+      - name: get_contacts
+        description: Retrieves all resources involved on any product the logged user is on.
+        ref: http://www.planbox.com/api/help/resources
+        path: /get_contacts/
+        params: None
+        auth: yes
+
+      - name: feedback
+        description: Send a feedback on behalf of a user. No login required to do this call.
+        ref: http://www.planbox.com/api/help/feedback
+        path: /feedback/
+        params: 
+            token: Your initiative token. You can find this on the Manage page.
+            feedback: The feedback message.
+            page_title: Optional. Your page title where the feedback originates from.
+            page_url: Optional. Your page URL where the feedback originates from.
+            user_email: Optional. It is the email of the user who sent the feedback.
+            forward_email: Optional. The email address where to send the feedback.
+        auth: no
+
+      - name: get_feedback
+        description: Gets all user feedback for a product.
+        ref: http://www.planbox.com/api/help/feedback
+        path: /get_feedback/
+        params: 
+            product_id: Product from which to retrieve user feedback.
+        auth: yes
+
+      - name: delete_feedback
+        description: Deletes a user feedback. You must be an admin to perform this call.
+        ref: http://www.planbox.com/api/help/feedback
+        path: /delete_feedback/
+        params: 
+            product_id: Parent product id.
+            feedback_id: Feedback id.
+        auth: yes
+
+      - name: source_commits
+        description: Comments on an item and optionally closes it. No login required to do this call.
+        ref: http://www.planbox.com/api/help/scm_integration
+        path: /source_commits/
+        params: 
+            token: Your initiative token. You can find this on the Manage page.
+            email: Your email, as a developer committing code. The same one as in your Planbox account.
+            commit_id: The commit number.
+            message: The commit comment or message.
+        auth: yes
+
+      - name: get_events
+        description: >
+            Returns Planbox events in the given date range for the given products. 
+            An event can be an iteration start or end, or an story which has a deadline.
+        ref: http://www.planbox.com/api/help/misc
+        path: /get_events/
+        params: 
+            product_ids: An array of product ids
+            start: A start date.
+            end: An end date.
+        auth: yes
+
+      - name: get_impediments
+        description: Returns blocked and rejected stories in the Current iteration of the given products.
+        ref: http://www.planbox.com/api/help/misc
+        path: /get_impediments/
+        params: 
+            product_ids: An array of product ids
+        auth: yes
+
+      - name: third_party_create_item
+        description: >
+            Creates a new item in Planbox from a third party application. 
+            Access to this API call is granted only if the Third Party API feature is turned on for the initiative. 
+            This can be done on the Manage page in the Features section.
+        ref: http://www.planbox.com/api/help/integrations
+        path: /third_party_create_item/
+        params: 
+            token: API initiative token. Can be found on the Manage page below the Features section.
+            source: Third Party name. Up to 20 characters allowed.
+            creator_email: Planbox user email. Must be someone on the initiative with admin or write access.
+            Note: Must be the same email used to log into Planbox.
+            name: Short name of the item.
+            description: Full description of the item.
+            assignee_email: Optional. Planbox user to assign the task of the item to. If omitted, task will be unassigned.
+            Note: Must be the same email used to log into Planbox.
+            timeframe: Optional. Iteration in which to put the new item. Can be one of current, next or backlog. Default is current.
+            project_alias: Optional. Project in which to put the new item. It is the project alias. If omitted, Planbox chooses the first project in the initiative.
+            type: Optional. Type of item as listed here.
+            tags: Optional. Comma separated tag words to help you classify the item (called labels in UI).
+            importance: Optional. Importance level of the item. If omitted, normal is used. Can be a number 1 to 5 as listed here.
+            points: Optional. Number of points assign to this item. Default is 0.
+            value: Optional. Business value of this item. Default is 0.
+            due_on: Optional. Due date for the item. If omitted, no due date is set.
+            attachments: Optional. An array of URLs to attach. These will appear as attachments on the item. Should be in the form [{filename:"screenshot.jpeg", url:"http://www.example.com/screenshot.jpeg"}, ...]
+        auth: yes
