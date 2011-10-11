@@ -7,11 +7,13 @@ Endpoints are defined in the planbox/planbox.yaml file
 
 ### Usage
 
+```python
     from planbox import PlanboxAPI
     api = PlanboxAPI()
     api.login(email='<your-email>',password='<your-password>')
     # call endpoints
     api.logout()
+```
 
 ### License
 
