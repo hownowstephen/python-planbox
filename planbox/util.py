@@ -35,9 +35,12 @@ class HTTPClient():
 
         # Check the type of data being provided
         if type(data) is dict:
-            # Assume a dictionary needs to be cast to JSON, and set the content type
-            data = json.dumps(data)
-            contenttype = 'application/json'
+            if contenttype is 'application/json':
+                # Assume a dictionary needs to be cast to JSON, and set the content type
+                data = json.dumps(data)
+            else:
+                data = urllib.urlencode(data)
+                contenttype = 'application/x-www-form-urlencoded'
 
         # Formulate a request object
         request = urllib2.Request(url, data=data)

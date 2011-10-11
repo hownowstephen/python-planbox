@@ -1,6 +1,6 @@
 planbox:
     # Define our base path
-    path: www.planbox.com/api
+    uri: http://www.planbox.com/api
 
     # Define some response codes
     codes:

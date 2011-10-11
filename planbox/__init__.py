@@ -11,13 +11,19 @@ class PlanboxAPI():
 
     def __endpoint__(self,endpoint,*args,**kwargs):
         '''Handles a request to a supplied endpoint'''
-        raise NotImplementedError, "Endpoint requests have not been implemented"
+        params = {}
+        for param,description in endpoint.params.iteritems():
+            if not param in kwargs and not param.startswith('Optional'):
+                raise MissingParameterError,'Missing parameter "%s": %s' % (param,description)
+            params[param] = kwargs[param]
+        url = ''.join([self.config.uri,endpoint.path])
+        return self.fetcher.do_POST(url,data=params)
 
     def __getattr__(self,key):
         '''Allows access to individual endpoints'''
         if key in self.config.endpoints.keys():
             def wrapper(*args,**kwargs):
-                return self.__endpoint__(key,*args,**kwargs)
+                return self.__endpoint__(DotDict(self.config.endpoints[key]),*args,**kwargs)
             return wrapper
         else:
             raise AttributeError,"No attribute %s could be found for the Planbox API" % key
@@ -34,8 +40,8 @@ class PlanboxAPI():
         config[root]['endpoints'] = endpoints
         return DotDict(config[root])
     
+class MissingParameterError(Exception): pass
 
 if __name__ == '__main__':
 
     api = PlanboxAPI()
-    api.login()
