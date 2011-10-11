@@ -48,9 +48,17 @@ class HTTPClient():
         request.add_header('Content-Type', contenttype)
         request.get_method = lambda: method
         # Open with the requested timeout
-        data = self.opener.open(request,timeout=timeout)
+        response = self.opener.open(request,timeout=timeout)
+
+        info = response.info()
+        data = response.read()
+        
+        # Attempt to load JSON
+        try:    data = json.loads(data)
+        except: pass
+
         # Return response headers and body
-        return data.info(),data.read()
+        return info,data
 
 
 class DotDict(dict):

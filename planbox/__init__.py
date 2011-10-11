@@ -13,10 +13,11 @@ class PlanboxAPI():
     def __endpoint__(self,endpoint,*args,**kwargs):
         '''Handles a request to a supplied endpoint'''
         params = {}
-        for param,description in endpoint.params.iteritems():
-            if not param in kwargs and not param.startswith('Optional'):
-                raise MissingParameterError,'Missing parameter "%s": %s' % (param,description)
-            params[param] = kwargs[param]
+        if not endpoint.params is None:
+            for param,description in endpoint.params.iteritems():
+                if not param in kwargs and not param.startswith('Optional'):
+                    raise MissingParameterError,'Missing parameter "%s": %s' % (param,description)
+                params[param] = kwargs[param]
         url = ''.join([self.config.uri,endpoint.path])
         headers,data = self.fetcher.do_POST(url,data=params)
         return data
@@ -48,7 +49,7 @@ class PlanboxAPI():
             print "Planbox API Methods"
             for key,endpoint in self.config.endpoints.iteritems():
                 print '\t%s: %s'  % (key,endpoint['description'])
-                if not endpoint['params'] is None:
+                if not endpoint['params'] is None: 
                     for param,description in endpoint['params'].iteritems():
                         print '\t\t%s: %s' % (param,description)
                 else:
@@ -62,4 +63,7 @@ class MissingParameterError(Exception): pass
 if __name__ == '__main__':
 
     api = PlanboxAPI()
-
+    api.login(email='<email>',password='<password>')
+    data = api.get_logged_resource()
+    PrettyPrinter().pprint(data)
+    api.logout()
